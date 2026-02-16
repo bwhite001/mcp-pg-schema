@@ -1,0 +1,40 @@
+{
+  "servers": {
+    // PostgreSQL Schema MCP Server - Read-only database schema metadata access
+    // Available Tools:
+    //   - list_schemas: List all database schemas
+    //   - list_tables: List tables (optionally by schema)  
+    //   - table_schema: Get detailed table metadata (columns, constraints, indexes)
+    //   - schema: Get all tables in a schema
+    //   - composite_types: List user-defined types
+    //   - functions: List function signatures
+    // Note: Provides metadata only, no access to actual table data
+    "postgres-srs": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        // Uncomment and modify the network line below if your PostgreSQL is in a Docker network
+        // "--network=your-postgres-network",
+        "mcp-pg-schema"
+      ],
+      "env": {
+        // For localhost PostgreSQL:
+        //   - macOS/Windows: use "host.docker.internal"
+        //   - Linux: use "localhost" and add "--network=host" to args
+        // For Docker network: use the PostgreSQL container name (e.g., "postgres")
+        "PGHOST": "host.docker.internal",
+        "PGPORT": "5432",
+        "PGDATABASE": "your_database_name",
+        "PGUSER": "your_database_user",
+        "PGPASSWORD": "your_database_password",
+        // SSL modes: disable, allow, prefer, require, verify-ca, verify-full
+        // Use "require" or "verify-full" for production
+        "PGSSLMODE": "require"
+      }
+    }
+  },
+  "inputs": []
+}
