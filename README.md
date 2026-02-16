@@ -951,6 +951,7 @@ When using `--file` mode with SQL dumps:
 
 ## Additional Documentation
 
+- **[AGENT-SETUP-GUIDE.md](AGENT-SETUP-GUIDE.md)** - 🤖 Comprehensive installation guide for AI agents (step-by-step with decision trees)
 - **[SECURITY.md](SECURITY.md)** - Comprehensive security guidelines, database user setup, credentials management, audit configuration
 - **[LIMITATIONS.md](LIMITATIONS.md)** - Detailed compatibility matrix, known issues, performance considerations, feature support matrix
 - **[DOCKER-NETWORKS.md](DOCKER-NETWORKS.md)** - Advanced Docker networking, bridging networks, troubleshooting
