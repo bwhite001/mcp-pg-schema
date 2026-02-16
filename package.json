@@ -1,5 +1,5 @@
 {
-  "name": "@vinsidious/mcp-pg-schema",
+  "name": "@bwhite001/mcp-pg-schema",
   "version": "0.4.0",
   "description": "MCP server for PostgreSQL schema inspection via Docker (supports direct connection, SSH tunnels, and static SQL files)",
   "license": "MIT",

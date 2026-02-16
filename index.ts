@@ -1063,8 +1063,8 @@ if (mode === "direct") {
 
 const server = new Server(
   {
-    name: "@vinsidious/mcp-pg-schema",
-    version: "0.3.0",
+    name: "@bwhite001/mcp-pg-schema",
+    version: "0.4.0",
   },
   {
     capabilities: {

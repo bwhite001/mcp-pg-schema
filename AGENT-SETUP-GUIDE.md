@@ -4,7 +4,7 @@
 
 ## Repository Overview
 
-**Repository**: `vinsidious/mcp-pg-schema`  
+**Repository**: `bwhite001/mcp-pg-schema`  
 **Version**: 0.4.0  
 **Author**: bwhite001  
 **License**: MIT
