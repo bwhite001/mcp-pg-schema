@@ -98,11 +98,149 @@ Resources are useful for letting MCP hosts discover what's available, while tool
 This server works with any MCP-compatible host. Tested with:
 
 - ✅ **Claude Desktop** (Anthropic) - Full support
+- ✅ **GitHub Copilot** - Full support
 - ✅ **Cursor IDE** - Full support
 - ✅ **Continue.dev** - Full support
 - ✅ **Custom MCP clients** - Any client following the MCP specification
 
 Configuration examples for each host are provided below.
+
+## Setup with GitHub Copilot
+
+GitHub Copilot supports MCP servers through VS Code. Follow these steps to configure the PostgreSQL schema server:
+
+### Prerequisites
+
+1. **Docker installed**: Ensure Docker Desktop is running on your machine
+2. **Build the image**: Run `docker build -t mcp-pg-schema .` from the project root
+3. **VS Code with GitHub Copilot**: Install the GitHub Copilot extension
+
+### Configuration
+
+Add the MCP server to your Copilot settings. There are two approaches:
+
+#### Option 1: Using VS Code Settings UI
+
+1. Open VS Code Settings (Cmd/Ctrl + ,)
+2. Search for "copilot mcp"
+3. Click "Edit in settings.json"
+4. Add your MCP server configuration
+
+#### Option 2: Direct settings.json Edit
+
+Open your VS Code settings file:
+- **macOS/Linux**: `~/.vscode/settings.json` or workspace `.vscode/settings.json`
+- **Windows**: `%APPDATA%\Code\User\settings.json`
+
+Add the following configuration:
+
+**Direct Connection with Environment Variables (Recommended):**
+```json
+{
+  "github.copilot.chat.mcp.servers": {
+    "postgres": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp-pg-schema"],
+      "env": {
+        "PGHOST": "host.docker.internal",
+        "PGPORT": "5432",
+        "PGDATABASE": "mydb",
+        "PGUSER": "mcp_reader",
+        "PGPASSWORD": "your_password",
+        "PGSSLMODE": "require"
+      }
+    }
+  }
+}
+```
+
+**Direct Connection with Connection String:**
+```json
+{
+  "github.copilot.chat.mcp.servers": {
+    "postgres": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "mcp-pg-schema",
+        "postgresql://mcp_reader:password@host.docker.internal:5432/mydb?sslmode=require"
+      ]
+    }
+  }
+}
+```
+
+**SSH Tunnel Connection:**
+```json
+{
+  "github.copilot.chat.mcp.servers": {
+    "postgres-ssh": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "/Users/you/.ssh/id_rsa:/config/id_rsa:ro",
+        "mcp-pg-schema",
+        "--ssh", "ssh://user@remote-server:22",
+        "--db", "postgresql://dbuser:dbpass@localhost:5432/mydb",
+        "--ssh-key", "/config/id_rsa"
+      ]
+    }
+  }
+}
+```
+
+**Static SQL File:**
+```json
+{
+  "github.copilot.chat.mcp.servers": {
+    "postgres-file": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-v", "/path/to/schema.sql:/config/schema.sql:ro",
+        "mcp-pg-schema",
+        "--file", "/config/schema.sql"
+      ]
+    }
+  }
+}
+```
+
+### Platform-Specific Notes
+
+**macOS/Windows:**
+- Use `host.docker.internal` to connect to localhost PostgreSQL
+- Example: `postgresql://user:pass@host.docker.internal:5432/mydb`
+
+**Linux:**
+- Add `--network=host` to Docker args for localhost connections
+- Example: `"args": ["run", "-i", "--rm", "--network=host", "mcp-pg-schema", "..."]`
+
+### Using the Server in Copilot Chat
+
+1. Reload VS Code (Cmd/Ctrl + Shift + P → "Developer: Reload Window")
+2. Open GitHub Copilot Chat
+3. The PostgreSQL schema tools will be automatically available
+4. Ask questions like:
+   - "What tables are in the public schema?"
+   - "Show me the schema for the users table"
+   - "List all foreign key relationships in the database"
+
+### Troubleshooting
+
+**Connection Failed:**
+- Verify Docker is running: `docker ps`
+- Test connection manually: `docker run -i --rm mcp-pg-schema postgresql://your-connection-string`
+- Check PostgreSQL is accessible from Docker (try `host.docker.internal` instead of `localhost`)
+
+**MCP Server Not Appearing:**
+- Check VS Code Output panel → "GitHub Copilot Chat"
+- Ensure the Docker image is built: `docker images | grep mcp-pg-schema`
+- Restart VS Code after configuration changes
+
+**Permission Denied (SSH Key):**
+- Ensure SSH key file has correct permissions: `chmod 600 ~/.ssh/id_rsa`
+- Verify the key file path in the volume mount is correct
 
 ## Security
 

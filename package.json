@@ -1,9 +1,9 @@
 {
   "name": "@vinsidious/mcp-pg-schema",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "MCP server for PostgreSQL schema inspection via Docker (supports direct connection, SSH tunnels, and static SQL files)",
   "license": "MIT",
-  "author": "Vince Coppola <vincecoppola@gmail.com>",
+  "author": "bwhite001",
   "type": "module",
   "bin": {
     "mcp-pg-schema": "dist/index.js"
