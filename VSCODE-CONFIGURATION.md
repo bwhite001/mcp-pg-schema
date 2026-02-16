@@ -12,7 +12,7 @@ This project includes an `mcp.json` file that VS Code can reference for MCP serv
 
 ### Step 1: Configure mcp.json
 
-Edit the `mcp.json` file in the project root and update with your database credentials:
+Edit the `mcp.json` file in the `.vscode` directory and update with your database credentials:
 
 ```json
 {
@@ -24,16 +24,14 @@ Edit the `mcp.json` file in the project root and update with your database crede
         "run",
         "-i",
         "--rm",
+        "-e", "PGHOST=host.docker.internal",
+        "-e", "PGPORT=5432",
+        "-e", "PGDATABASE=your_database_name",
+        "-e", "PGUSER=your_database_user",
+        "-e", "PGPASSWORD=your_database_password",
+        "-e", "PGSSLMODE=require",
         "mcp-pg-schema"
-      ],
-      "env": {
-        "PGHOST": "host.docker.internal",
-        "PGPORT": "5432",
-        "PGDATABASE": "your_database_name",
-        "PGUSER": "your_database_user",
-        "PGPASSWORD": "your_database_password",
-        "PGSSLMODE": "require"
-      }
+      ]
     }
   },
   "inputs": []
@@ -41,9 +39,9 @@ Edit the `mcp.json` file in the project root and update with your database crede
 ```
 
 **Platform-specific notes:**
-- **macOS/Windows**: Use `PGHOST: "host.docker.internal"` for localhost PostgreSQL
-- **Linux**: Add `"--network=host"` to args array, use `PGHOST: "localhost"` 
-- **Docker Network**: Use `"--network=your-network-name"` in args, use container name as PGHOST
+- **macOS/Windows**: Use `PGHOST=host.docker.internal` for localhost PostgreSQL
+- **Linux**: Add `"--network=host"` to args array, use `PGHOST=localhost` 
+- **Docker Network**: Add `"--network=your-network-name"` to args, use container name as PGHOST (e.g., `PGHOST=postgres`)
 
 ### Step 2: Reference mcp.json in VS Code Settings
 
@@ -102,16 +100,14 @@ Find the section with `"github.copilot.chat.mcp.servers"` and update the `postgr
         "run",
         "-i",
         "--rm",
+        "-e", "PGHOST=host.docker.internal",
+        "-e", "PGPORT=5432",
+        "-e", "PGDATABASE=your_database_name",
+        "-e", "PGUSER=your_database_user",
+        "-e", "PGPASSWORD=your_database_password",
+        "-e", "PGSSLMODE=require",
         "mcp-pg-schema"
-      ],
-      "env": {
-        "PGHOST": "host.docker.internal",
-        "PGPORT": "5432",
-        "PGDATABASE": "your_database_name",
-        "PGUSER": "your_database_user",
-        "PGPASSWORD": "your_database_password",
-        "PGSSLMODE": "require"
-      }
+      ]
     }
   }
 }
@@ -269,16 +265,14 @@ Here's a complete working example for a local PostgreSQL:
         "run",
         "-i",
         "--rm",
+        "-e", "PGHOST=host.docker.internal",
+        "-e", "PGPORT=5432",
+        "-e", "PGDATABASE=testdb",
+        "-e", "PGUSER=testuser",
+        "-e", "PGPASSWORD=testpass",
+        "-e", "PGSSLMODE=disable",
         "mcp-pg-schema"
-      ],
-      "env": {
-        "PGHOST": "host.docker.internal",
-        "PGPORT": "5432",
-        "PGDATABASE": "testdb",
-        "PGUSER": "testuser",
-        "PGPASSWORD": "testpass",
-        "PGSSLMODE": "disable"
-      }
+      ]
     }
   }
 }
