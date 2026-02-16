@@ -1,6 +1,10 @@
 # MCP configuration with credentials
 mcp.json
 
+# Environment files with secrets
+.env
+.env.local
+
 # Logs
 logs
 *.log

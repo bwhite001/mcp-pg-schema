@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "postgres-srs": {
+      "type": "stdio",
+      "command": "/absolute/path/to/mcp-pg-schema/scripts/mcp-postgres-srs",
+      "args": []
+    }
+  },
+  "inputs": []
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# MCP PostgreSQL Schema Server wrapper script
+# Reads database credentials from environment variables and launches the Docker container
+
+set -euo pipefail
+
+# Default values
+PGHOST="${PGHOST:-postgres}"
+PGPORT="${PGPORT:-5432}"
+PGDATABASE="${PGDATABASE:-srs}"
+PGUSER="${PGUSER:-srs_alpha}"
+PGSSLMODE="${PGSSLMODE:-disable}"
+DOCKER_NETWORK="${DOCKER_NETWORK:-srs_default}"
+
+# PGPASSWORD is required
+if [ -z "${PGPASSWORD:-}" ]; then
+  echo "Error: PGPASSWORD environment variable is required" >&2
+  exit 1
+fi
+
+# Launch the MCP server
+exec docker run -i --rm \
+  --network="${DOCKER_NETWORK}" \
+  -e PGHOST="${PGHOST}" \
+  -e PGPORT="${PGPORT}" \
+  -e PGDATABASE="${PGDATABASE}" \
+  -e PGUSER="${PGUSER}" \
+  -e PGPASSWORD="${PGPASSWORD}" \
+  -e PGSSLMODE="${PGSSLMODE}" \
+  mcp-pg-schema
