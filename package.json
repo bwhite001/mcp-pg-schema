@@ -20,7 +20,7 @@
     "@modelcontextprotocol/sdk": "1.0.1",
     "pg": "^8.13.0",
     "ssh2": "^1.15.0",
-    "sql-parser-cst": "^1.4.0"
+    "sql-parser-cst": "^0.38.0"
   },
   "devDependencies": {
     "@types/pg": "^8.11.10",
