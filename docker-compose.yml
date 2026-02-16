@@ -1,0 +1,80 @@
+services:
+  # Example PostgreSQL 12 database (optional - can use external)
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mcp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Mode 1: Direct Connection MCP Server
+  mcp-server:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    networks:
+      - mcp-network
+    command: ["postgresql://testuser:testpass@postgres:5432/testdb"]
+
+  # Mode 2: SSH Tunnel Connection (example - uncomment and configure)
+  # mcp-server-ssh:
+  #   image: mcp-pg-schema
+  #   stdin_open: true
+  #   tty: true
+  #   volumes:
+  #     - ~/.ssh/id_rsa:/config/id_rsa:ro
+  #   command:
+  #     - "--ssh"
+  #     - "ssh://user@remote-server:22"
+  #     - "--db"
+  #     - "postgresql://dbuser:dbpass@localhost:5432/mydb"
+  #     - "--ssh-key"
+  #     - "/config/id_rsa"
+
+  # Mode 3: Static SQL File (example - uses sample schema)
+  mcp-server-file:
+    image: mcp-pg-schema
+    build: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./examples/sample-schema.sql:/config/schema.sql:ro
+    command:
+      - "--file"
+      - "/config/schema.sql"
+
+  # Example: Connect to external postgres in another network
+  # Uncomment and configure to use an existing postgres instance
+  # mcp-server-external:
+  #   image: mcp-pg-schema
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     - mcp-network
+  #     - external-postgres-network
+  #   command: ["postgresql://user:pass@external-postgres:5432/mydb"]
+
+volumes:
+  postgres_data:
+
+networks:
+  mcp-network:
+    driver: bridge
+  # To connect to external postgres in another docker network:
+  # external-postgres-network:
+  #   external: true
+  #   name: your-existing-network-name

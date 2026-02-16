@@ -1,24 +1,26 @@
 FROM node:22.12-alpine AS builder
 
-COPY src/postgres /app
-COPY tsconfig.json /tsconfig.json
-
 WORKDIR /app
 
-RUN --mount=type=cache,target=/root/.npm npm install
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY index.ts ./
 
-RUN --mount=type=cache,target=/root/.npm-production npm ci --ignore-scripts --omit-dev
+RUN npm ci
 
 FROM node:22-alpine AS release
 
-COPY --from=builder /app/dist /app/dist
-COPY --from=builder /app/package.json /app/package.json
-COPY --from=builder /app/package-lock.json /app/package-lock.json
-
-ENV NODE_ENV=production
+# Install openssh for SSH tunnel support
+RUN apk add --no-cache openssh-client
 
 WORKDIR /app
 
-RUN npm ci --ignore-scripts --omit-dev
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+
+RUN npm ci --omit=dev --ignore-scripts
+
+# Create directory for SSH keys and SQL files
+RUN mkdir -p /config
 
 ENTRYPOINT ["node", "dist/index.js"]

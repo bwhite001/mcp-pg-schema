@@ -1,0 +1,25 @@
+# Example: Connect to Postgres in External Docker Network
+#
+# Use this docker-compose file when you have a PostgreSQL instance
+# running in a separate Docker network and want to connect to it.
+#
+# Usage:
+#   1. Find your external network name: docker network ls
+#   2. Update 'your-postgres-network' below with actual network name
+#   3. Update connection string with your postgres host/credentials
+#   4. Run: docker compose -f docker-compose.external.yml up
+
+services:
+  mcp-server:
+    image: mcp-pg-schema
+    stdin_open: true
+    tty: true
+    networks:
+      - external-postgres-network
+    # Update with your actual postgres connection details
+    command: ["postgresql://your-user:your-password@postgres-container-name:5432/your-database"]
+
+networks:
+  external-postgres-network:
+    external: true
+    name: your-postgres-network  # Replace with actual network name from 'docker network ls'
